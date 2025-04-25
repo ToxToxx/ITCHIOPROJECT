@@ -17,14 +17,11 @@ namespace Game
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private float _rayDistance = 100f;
 
-        [Header("Goal Settings")]
-        [SerializeField] private GameObject _goalManagerUIPrefab;
-        [SerializeField] private Canvas _targetCanvas;
 
         private void Awake()
         {
             // Проверяем, что все поля установлены
-            if (_winCanvas == null || _gameOverCanvas == null || _goalManagerUIPrefab == null || _targetCanvas == null)
+            if (_winCanvas == null || _gameOverCanvas == null)
             {
                 Debug.LogError("One or more required fields are not set in ManagersBootstrap!");
                 return;
@@ -34,11 +31,11 @@ namespace Game
             var inGameManagers = gameObject.AddComponent<InGameManagersBootstrap>();
             var goalManager = gameObject.AddComponent<GoalManager>();
             var inputHandler = gameObject.AddComponent<InputHandler>();
-
+             
             // Устанавливаем настройки для менеджеров
             inGameManagers.SetWinSettings(_winCanvas, _reward, _currentLevelIndex);
             inGameManagers.SetGameOverSettings(_gameOverCanvas);
-            goalManager.SetGoalSettings(_goalManagerUIPrefab, _targetCanvas);
+            goalManager.SetGoalSettings();
             inputHandler.SetInputSettings(_targetLayer, _rayDistance);
 
             // Вызываем дополнительную инициализацию

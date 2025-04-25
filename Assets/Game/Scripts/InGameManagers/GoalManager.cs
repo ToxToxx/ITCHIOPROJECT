@@ -8,8 +8,6 @@ namespace Game
     {
         public static GoalManager Instance { get; private set; }
 
-        private GameObject _goalManagerUIPrefab;
-        private Canvas _targetCanvas;
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -22,21 +20,6 @@ namespace Game
             }
         }
 
-        private void Start()
-        {
-            if (GoalManagerUI.Instance == null)
-            {
-                if (_targetCanvas == null)
-                {
-                    Debug.LogError("❌ Target Canvas не назначен в GoalManager!");
-                    return;
-                }
-
-                GameObject uiObject = Instantiate(_goalManagerUIPrefab, _targetCanvas.transform, false);
-            }
-        }
-
-
         private void CheckWinCondition()
         {
             bool allGoalsMet = true;
@@ -48,10 +31,9 @@ namespace Game
             }
         }
 
-        public void SetGoalSettings(GameObject goalManagerUIPrefab, Canvas canvas)
+        public void SetGoalSettings()
         {
-            _goalManagerUIPrefab = goalManagerUIPrefab;
-            _targetCanvas = canvas;
+
         }
     }
 }
