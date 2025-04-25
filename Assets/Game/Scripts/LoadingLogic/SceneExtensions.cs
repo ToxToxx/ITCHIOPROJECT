@@ -11,10 +11,7 @@ namespace Game
             {
                 case Loader.Scene.MainMenu: return "MainMenu";
                 case Loader.Scene.LoadingScreen: return "LoadingScreen";
-                case Loader.Scene.Level1: return "Level1";
-                case Loader.Scene.Level2: return "Level2";
-                case Loader.Scene.Level3: return "Level3";
-                case Loader.Scene.Level4: return "Level4";
+                case Loader.Scene.GameScene: return "GameScene";
                 default: return string.Empty;
             }
         }

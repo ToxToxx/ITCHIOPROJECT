@@ -11,7 +11,6 @@ namespace Game
         private readonly int _levelIndex;
 
         private GameStateManager _gameStateManager;
-        private LevelManager _levelManager;
         private bool _isGameWon;
 
         public WinManager(GameObject winCanvas, int reward, int levelIndex)
@@ -22,11 +21,9 @@ namespace Game
         }
 
         public void InjectDependencies(
-            GameStateManager gameStateManager,
-            LevelManager levelManager)
+            GameStateManager gameStateManager)
         {
             _gameStateManager = gameStateManager;
-            _levelManager = levelManager;
         }
 
         public void Initialize()
@@ -44,10 +41,6 @@ namespace Game
             if (_isGameWon) return;
             _isGameWon = true;
 
-            if (_levelManager != null)
-            {
-                _levelManager.CompleteLevel(_levelIndex);
-            }
             _winCanvas.SetActive(true);
         }
     }

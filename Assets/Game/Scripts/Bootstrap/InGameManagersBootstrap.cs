@@ -45,13 +45,11 @@ namespace Game
                 return;
             }
 
-            var levelManager = LevelManager.Instance;
-
             _gameStateManager = new GameStateManager();
             _winManager = new WinManager(_winCanvas, _reward, _currentLevelIndex);
             _gameOverManager = new GameOverManager(_gameOverCanvas);
 
-            _winManager.InjectDependencies(_gameStateManager, levelManager);
+            _winManager.InjectDependencies(_gameStateManager);
             _gameOverManager.InjectDependencies(_gameStateManager);
 
             _gameStateManager.Initialize();
