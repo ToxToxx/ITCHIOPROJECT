@@ -628,8 +628,8 @@ MonoBehaviour:
   _canvasGroup: {fileID: 1412603869}
   _fadeInDuration: 1.5
   _scaleInDuration: 1.2
-  _fadeEase: 4
-  _scaleEase: 18
+  _fadeEase: 35
+  _scaleEase: 15
   _bobbingDistance: 10
   _bobbingDuration: 2
   _shakeIntensity: 2
