@@ -13,10 +13,6 @@ namespace Game
         [Header("GameOver Settings")]
         [SerializeField] private GameObject _gameOverCanvas;
 
-        [Header("Input Settings")]
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private float _rayDistance = 100f;
-
 
         private void Awake()
         {
@@ -36,7 +32,6 @@ namespace Game
             inGameManagers.SetWinSettings(_winCanvas, _reward, _currentLevelIndex);
             inGameManagers.SetGameOverSettings(_gameOverCanvas);
             goalManager.SetGoalSettings();
-            inputHandler.SetInputSettings(_targetLayer, _rayDistance);
 
             // Вызываем дополнительную инициализацию
             inGameManagers.InitializeManagers();

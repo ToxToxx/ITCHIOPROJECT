@@ -1,7 +1,6 @@
 using System;
 using UniRx;
 using UnityEngine;
-using System.Linq;
 using System.Reflection;
 
 namespace Game
@@ -11,13 +10,12 @@ namespace Game
     {
         public static InputHandler Instance { get; private set; }
 
-        [Header("Настройки")]
-        [SerializeField] LayerMask _targetLayer;
-        [SerializeField] private float _rayDistance = 100f;
+        private readonly Subject<Vector2> _onDragDeltaSubject = new Subject<Vector2>();
 
-        private Camera _mainCamera;
-        private readonly Subject<GameObject> _onClickSubject = new Subject<GameObject>();
-        public IObservable<GameObject> OnObjectClicked => _onClickSubject;
+        public IObservable<Vector2> OnDragDelta => _onDragDeltaSubject;
+
+        private Vector2 _lastInputPosition;
+        private bool _isDragging;
 
         private void Awake()
         {
@@ -27,7 +25,6 @@ namespace Game
                 return;
             }
             Instance = this;
-            _mainCamera = Camera.main;
         }
 
         private void Update()
@@ -35,80 +32,63 @@ namespace Game
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
+                HandleTouch(touch.phase, touch.position);
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
                 {
-                    ProcessInputAtPosition(touch.position);
+                    StartDrag(Input.mousePosition);
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    ContinueDrag(Input.mousePosition);
+                }
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    EndDrag();
                 }
             }
-            else if (Input.GetMouseButtonDown(0))
+        }
+
+        private void HandleTouch(TouchPhase phase, Vector2 position)
+        {
+            switch (phase)
             {
-                ProcessInputAtPosition(Input.mousePosition);
+                case TouchPhase.Began:
+                    StartDrag(position);
+                    break;
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    ContinueDrag(position);
+                    break;
+                case TouchPhase.Ended:
+                case TouchPhase.Canceled:
+                    EndDrag();
+                    break;
             }
         }
 
-        public void OnClick()
+        private void StartDrag(Vector2 position)
         {
-            Vector2 inputPosition = GetInputPosition();
-            if (inputPosition != Vector2.zero)
-            {
-                ProcessInputAtPosition(inputPosition);
-            }
+            _isDragging = true;
+            _lastInputPosition = position;
         }
 
-        private Vector2 GetInputPosition()
+        private void ContinueDrag(Vector2 position)
         {
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                return touch.position;
-            }
-            return Input.mousePosition;
-        }
-
-        private void ProcessInputAtPosition(Vector2 inputPosition)
-        {
-            if (inputPosition == Vector2.zero)
+            if (!_isDragging)
                 return;
 
-            Ray ray = _mainCamera.ScreenPointToRay(inputPosition);
-            CheckObjectUnderPointer(ray);
+            Vector2 delta = position - _lastInputPosition;
+            _lastInputPosition = position;
+
+            _onDragDeltaSubject.OnNext(delta);
         }
 
-        private void CheckObjectUnderPointer(Ray ray)
+        private void EndDrag()
         {
-            Vector2 rayOrigin = ray.origin;
-            Vector2 rayDirection = ray.direction;
-
-            // Получаем все объекты под лучом
-            RaycastHit2D[] hits = Physics2D.RaycastAll(rayOrigin, rayDirection, _rayDistance, _targetLayer);
-
-            if (hits.Length > 0)
-            {
-                // Сортируем по убыванию Sorting Order и, при равенстве, по Z-позиции (меньше Z — выше)
-                var sortedHits = hits
-                    .Where(h => h.collider != null)
-                    .OrderByDescending(h => h.collider.GetComponent<SpriteRenderer>()?.sortingOrder ?? 0)
-                    .ThenBy(h => h.point.y); // Предполагаем 2D, где меньший Y (или Z в 3D) — ближе к камере
-
-                foreach (var hit in sortedHits)
-                {
-                    GameObject clickedObject = hit.collider.gameObject;
-                    if (clickedObject.TryGetComponent<IClickable>(out var clickable))
-                    {
-                        clickable.CheckClick();
-                        return; // Обрабатываем только первый IClickable
-                    }
-                }
-
-                // Если ни один IClickable не найден, отправляем первый объект
-                _onClickSubject.OnNext(sortedHits.First().collider.gameObject);
-            }
-        }
-
-        public void SetInputSettings(LayerMask targetLayer, float rayDistance)
-        {
-            _targetLayer = targetLayer;
-            _rayDistance = rayDistance;
+            _isDragging = false;
         }
     }
 }
