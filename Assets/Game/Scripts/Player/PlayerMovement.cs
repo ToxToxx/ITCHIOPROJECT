@@ -6,36 +6,44 @@ namespace Game
     public class PlayerMovement : MonoBehaviour
     {
         [Header("Настройки движения")]
-        [SerializeField] private float moveSpeed = 5f;        // Насколько быстро реагирует на свайп
-        [SerializeField] private float maxVerticalSpeed = 10f; // Ограничение максимальной скорости вверх/вниз
-        [SerializeField] private float smoothing = 5f;         // Насколько плавно тянется за пальцем
+        [SerializeField] private float followSpeed = 5f;    // Скорость следования к позиции пальца
+        [SerializeField] private float verticalLimit = 4f;  // Ограничение по высоте движения
 
-        private float _targetVerticalSpeed;
-        private float _currentVerticalSpeed;
+        private Camera _mainCamera;
+        private float? _targetY;  // Целевая позиция Y (куда хотим двигаться)
 
         private void Start()
         {
+            _mainCamera = Camera.main;
+
             InputHandler.Instance.OnDragDelta
-                .Subscribe(OnDrag)
+                .Subscribe(_ => UpdateTargetPosition())
                 .AddTo(this);
         }
 
         private void Update()
         {
-            // Плавно интерполируем к целевой скорости
-            _currentVerticalSpeed = Mathf.Lerp(_currentVerticalSpeed, _targetVerticalSpeed, Time.deltaTime * smoothing);
+            if (_targetY.HasValue)
+            {
+                // Плавно двигаемся к цели
+                Vector3 currentPosition = transform.position;
+                float newY = Mathf.Lerp(currentPosition.y, _targetY.Value, Time.deltaTime * followSpeed);
 
-            // Двигаем игрока вверх/вниз
-            transform.Translate(Vector3.up * _currentVerticalSpeed * Time.deltaTime);
+                // Ограничиваем по высоте
+                newY = Mathf.Clamp(newY, -verticalLimit, verticalLimit);
+
+                transform.position = new Vector3(currentPosition.x, newY, currentPosition.z);
+            }
         }
 
-        private void OnDrag(Vector2 delta)
+        private void UpdateTargetPosition()
         {
-            // Берем только вертикальное движение
-            float verticalInput = delta.y;
-
-            // Преобразуем input в целевую скорость
-            _targetVerticalSpeed = Mathf.Clamp(verticalInput * moveSpeed, -maxVerticalSpeed, maxVerticalSpeed);
+            Vector2 inputPosition = InputHandler.Instance.GetInputPosition();
+            if (inputPosition != Vector2.zero)
+            {
+                Vector3 worldPosition = _mainCamera.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, -_mainCamera.transform.position.z));
+                _targetY = worldPosition.y;
+            }
         }
     }
 }

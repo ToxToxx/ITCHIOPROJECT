@@ -90,5 +90,10 @@ namespace Game
         {
             _isDragging = false;
         }
+
+        public Vector2 GetInputPosition()
+        {
+            return _lastInputPosition;
+        }
     }
 }
