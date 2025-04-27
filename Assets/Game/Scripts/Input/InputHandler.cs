@@ -5,17 +5,19 @@ using System.Reflection;
 
 namespace Game
 {
-    [ObfuscationAttribute(Exclude = true)]
+    [Obfuscation(Exclude = true)]
     public class InputHandler : MonoBehaviour
     {
         public static InputHandler Instance { get; private set; }
 
         private readonly Subject<Vector2> _onDragDeltaSubject = new Subject<Vector2>();
+        private readonly ReactiveProperty<bool> _isTouching = new ReactiveProperty<bool>();
 
         public IObservable<Vector2> OnDragDelta => _onDragDeltaSubject;
+        public IReadOnlyReactiveProperty<bool> IsTouching => _isTouching;
 
         private Vector2 _lastInputPosition;
-        private bool _isDragging;
+        private bool _currentlyDragging;
 
         private void Awake()
         {
@@ -48,6 +50,10 @@ namespace Game
                 {
                     EndDrag();
                 }
+                else
+                {
+                    _isTouching.Value = false;
+                }
             }
         }
 
@@ -71,24 +77,27 @@ namespace Game
 
         private void StartDrag(Vector2 position)
         {
-            _isDragging = true;
+            _currentlyDragging = true;
             _lastInputPosition = position;
+            _isTouching.Value = true;
         }
 
         private void ContinueDrag(Vector2 position)
         {
-            if (!_isDragging)
+            if (!_currentlyDragging)
                 return;
 
             Vector2 delta = position - _lastInputPosition;
             _lastInputPosition = position;
 
             _onDragDeltaSubject.OnNext(delta);
+            _isTouching.Value = true;
         }
 
         private void EndDrag()
         {
-            _isDragging = false;
+            _currentlyDragging = false;
+            _isTouching.Value = false;
         }
 
         public Vector2 GetInputPosition()

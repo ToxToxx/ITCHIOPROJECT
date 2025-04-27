@@ -6,44 +6,49 @@ namespace Game
     public class PlayerMovement : MonoBehaviour
     {
         [Header("Настройки движения")]
-        [SerializeField] private float followSpeed = 5f;    // Скорость следования к позиции пальца
-        [SerializeField] private float verticalLimit = 4f;  // Ограничение по высоте движения
+        [SerializeField] private float ascendSpeed = 5f;      // Скорость подъема при зажатии
+        [SerializeField] private float descendSpeed = 3f;     // Скорость падения без зажатия
+        [SerializeField] private float maxVerticalSpeed = 7f; // Ограничение максимальной скорости
+        [SerializeField] private float verticalLimit = 4f;    // Ограничение по высоте
 
-        private Camera _mainCamera;
-        private float? _targetY;  // Целевая позиция Y (куда хотим двигаться)
+        private bool _isTouching;
+        private float _verticalVelocity;
 
         private void Start()
         {
-            _mainCamera = Camera.main;
-
-            InputHandler.Instance.OnDragDelta
-                .Subscribe(_ => UpdateTargetPosition())
+            // Реактивно отслеживаем касания
+            Observable.EveryUpdate()
+                .Subscribe(_ => UpdateTouchState())
                 .AddTo(this);
+        }
+
+        private void UpdateTouchState()
+        {
+            _isTouching = Input.touchCount > 0 || Input.GetMouseButton(0);
         }
 
         private void Update()
         {
-            if (_targetY.HasValue)
+            if (_isTouching)
             {
-                // Плавно двигаемся к цели
-                Vector3 currentPosition = transform.position;
-                float newY = Mathf.Lerp(currentPosition.y, _targetY.Value, Time.deltaTime * followSpeed);
-
-                // Ограничиваем по высоте
-                newY = Mathf.Clamp(newY, -verticalLimit, verticalLimit);
-
-                transform.position = new Vector3(currentPosition.x, newY, currentPosition.z);
+                _verticalVelocity += ascendSpeed * Time.deltaTime;
             }
-        }
-
-        private void UpdateTargetPosition()
-        {
-            Vector2 inputPosition = InputHandler.Instance.GetInputPosition();
-            if (inputPosition != Vector2.zero)
+            else
             {
-                Vector3 worldPosition = _mainCamera.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, -_mainCamera.transform.position.z));
-                _targetY = worldPosition.y;
+                _verticalVelocity -= descendSpeed * Time.deltaTime;
             }
+
+            // Ограничиваем скорость
+            _verticalVelocity = Mathf.Clamp(_verticalVelocity, -maxVerticalSpeed, maxVerticalSpeed);
+
+            // Обновляем позицию
+            Vector3 currentPosition = transform.position;
+            float newY = currentPosition.y + _verticalVelocity * Time.deltaTime;
+
+            // Ограничиваем позицию по высоте
+            newY = Mathf.Clamp(newY, -verticalLimit, verticalLimit);
+
+            transform.position = new Vector3(currentPosition.x, newY, currentPosition.z);
         }
     }
 }

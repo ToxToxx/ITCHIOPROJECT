@@ -629,7 +629,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 921699acfe6ddfe43a229960295d7742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 5
+  ascendSpeed: 5
+  descendSpeed: 5
+  maxVerticalSpeed: 7
   verticalLimit: 4
 --- !u!1 &783033913
 GameObject:
