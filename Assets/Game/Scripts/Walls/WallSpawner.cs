@@ -36,5 +36,4 @@ namespace Game
             Destroy(pipe, _destroyingTime);
         }
     }
-   
 }
