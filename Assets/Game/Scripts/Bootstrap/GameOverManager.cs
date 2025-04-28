@@ -24,7 +24,7 @@ namespace Game
             _gameStateManager.CurrentState
                 .Subscribe(state =>
                 {
-                    if (state == GameState.GameOver) TriggerGameOver();
+                    if (state == GameState.Result) TriggerGameOver();
                 })
                 .AddTo(_gameOverCanvas);
         }

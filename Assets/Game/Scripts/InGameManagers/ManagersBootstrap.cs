@@ -5,11 +5,6 @@ namespace Game
 {
     public class ManagersBootstrap : MonoBehaviour
     {
-        [Header("Win Settings")]
-        [SerializeField] private GameObject _winCanvas;
-        [SerializeField] private int _reward = 0;
-        [SerializeField] private int _currentLevelIndex = 1;
-
         [Header("GameOver Settings")]
         [SerializeField] private GameObject _gameOverCanvas;
 
@@ -17,7 +12,7 @@ namespace Game
         private void Awake()
         {
             // Проверяем, что все поля установлены
-            if (_winCanvas == null || _gameOverCanvas == null)
+            if (_gameOverCanvas == null)
             {
                 Debug.LogError("One or more required fields are not set in ManagersBootstrap!");
                 return;
@@ -29,7 +24,6 @@ namespace Game
             var inputHandler = gameObject.AddComponent<InputHandler>();
              
             // Устанавливаем настройки для менеджеров
-            inGameManagers.SetWinSettings(_winCanvas, _reward, _currentLevelIndex);
             inGameManagers.SetGameOverSettings(_gameOverCanvas);
             goalManager.SetGoalSettings();
 

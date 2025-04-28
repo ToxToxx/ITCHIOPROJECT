@@ -10,16 +10,11 @@ namespace Game
 
     public class InGameManagersBootstrap : MonoBehaviour
     {
-        [Header("Win Settings")]
-        private GameObject _winCanvas;
-        private int _reward = 0;
-        private int _currentLevelIndex = 1;
 
         [Header("GameOver Settings")]
         private GameObject _gameOverCanvas;
 
         private GameStateManager _gameStateManager;
-        private WinManager _winManager;
         private GameOverManager _gameOverManager;
         private bool _isInitialized = false;
 
@@ -39,21 +34,18 @@ namespace Game
             }
 
             // Проверяем, что все поля установлены
-            if (_winCanvas == null || _gameOverCanvas == null)
+            if ( _gameOverCanvas == null)
             {
                 Debug.LogError("WinCanvas or GameOverCanvas is not set in InGameManagersBootstrap!");
                 return;
             }
 
             _gameStateManager = new GameStateManager();
-            _winManager = new WinManager(_winCanvas, _reward, _currentLevelIndex);
             _gameOverManager = new GameOverManager(_gameOverCanvas);
 
-            _winManager.InjectDependencies(_gameStateManager);
             _gameOverManager.InjectDependencies(_gameStateManager);
 
             _gameStateManager.Initialize();
-            _winManager.Initialize();
             _gameOverManager.Initialize();
 
             _gameStateManager.SetState(GameState.Playing);
@@ -66,12 +58,6 @@ namespace Game
             Time.timeScale = state == GameState.Paused ? 0f : 1f;
         }
 
-        public void SetWinSettings(GameObject winCanvas, int reward, int currentLevelIndex)
-        {
-            _winCanvas = winCanvas;
-            _reward = reward;
-            _currentLevelIndex = currentLevelIndex;
-        }
 
         public void SetGameOverSettings(GameObject gameOverCanvas)
         {

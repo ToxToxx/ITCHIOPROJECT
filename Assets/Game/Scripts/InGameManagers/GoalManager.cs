@@ -27,7 +27,6 @@ namespace Game
             if (allGoalsMet)
             {
                 Debug.Log("Все шарики собраны! Победа!");
-                GameStateManager.Instance.SetState(GameState.Win);
             }
         }
 
