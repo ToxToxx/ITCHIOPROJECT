@@ -1,4 +1,5 @@
 using UnityEngine;
+using UniRx;
 
 namespace Game
 {
@@ -6,8 +7,11 @@ namespace Game
     {
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            GameStateManager.Instance.SetState(GameState.Result);
+            if (collision.TryGetComponent<PlayerAnimation>(out var playerAnimation))
+            {
+                playerAnimation.PlayCrashAnimation();
+                GameEventSystem.OnPlayerCrashed.OnNext(Unit.Default);
+            }
         }
-
     }
 }

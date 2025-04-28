@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicSource: {fileID: 425884705}
-  _backgroundMusic: {fileID: 0}
+  _backgroundMusic: {fileID: 8300000, guid: 14dea7621e5de97479c29118f92d3c17, type: 3}
   IsMusicOn: 1
 --- !u!4 &425884707
 Transform:
