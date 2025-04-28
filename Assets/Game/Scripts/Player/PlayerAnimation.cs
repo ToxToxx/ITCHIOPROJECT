@@ -11,6 +11,8 @@ namespace Game
         [SerializeField] private float _rotationSpeed = 360f;
         [SerializeField] private float _flashDuration = 0.1f;
         [SerializeField] private int _flashCount = 5;
+        [SerializeField] private float _cameraShakeDuration = 0.2f;   // <-- длительность тряски камеры
+        [SerializeField] private float _cameraShakeStrength = 0.3f;   // <-- сила тряски камеры
 
         private Rigidbody2D _rigidbody;
         private SpriteRenderer _spriteRenderer;
@@ -49,8 +51,11 @@ namespace Game
             // Включаем вращение
             _rigidbody.angularVelocity = _rotationSpeed;
 
-            // Начинаем анимацию мигания
+            // Запускаем мигание
             PlayFlashRed();
+
+            // Запускаем тряску камеры
+            ShakeCamera();
 
             // Через время вызвать GameOver
             Invoke(nameof(TriggerGameOver), _flashDuration * _flashCount * 2);
@@ -70,6 +75,16 @@ namespace Game
             }
 
             _flashSequence.SetEase(Ease.Linear);
+        }
+
+        private void ShakeCamera()
+        {
+            if (Camera.main != null)
+            {
+                Camera.main.transform
+                    .DOShakePosition(_cameraShakeDuration, _cameraShakeStrength, vibrato: 10, randomness: 90, snapping: false, fadeOut: true)
+                    .SetEase(Ease.OutQuad);
+            }
         }
 
         private void TriggerGameOver()

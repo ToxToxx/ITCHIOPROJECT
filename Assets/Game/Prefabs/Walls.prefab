@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1768b571baa0e6d44ae9fd38e3bc9ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _crashEffectPrefab: {fileID: 2433282508523890284, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
 --- !u!50 &7473395216735813107
 Rigidbody2D:
   serializedVersion: 5
@@ -370,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1768b571baa0e6d44ae9fd38e3bc9ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _crashEffectPrefab: {fileID: 2433282508523890284, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
 --- !u!50 &7183492083259430306
 Rigidbody2D:
   serializedVersion: 5
