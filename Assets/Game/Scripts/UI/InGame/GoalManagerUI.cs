@@ -12,18 +12,6 @@ namespace Game
         [SerializeField] private TextMeshProUGUI _currentScoreText;
         [SerializeField] private TextMeshProUGUI _bestScoreText;
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
-
         private void Start()
         {
             // При старте обновляем UI начальными данными

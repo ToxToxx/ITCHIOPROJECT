@@ -29,12 +29,15 @@ namespace Game
 
         private void Update()
         {
-            _timer += Time.deltaTime;
-
-            if (_timer >= 1f)
+            if (GameStateManager.Instance.CurrentState.Value == GameState.Playing)
             {
-                _timer -= 1f;
-                AddPoints(Mathf.RoundToInt(_pointsPerSecond));
+                _timer += Time.deltaTime;
+
+                if (_timer >= 1f)
+                {
+                    _timer -= 1f;
+                    AddPoints(Mathf.RoundToInt(_pointsPerSecond));
+                }
             }
         }
 
