@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Dan.Main;
-using UnityEngine.UI; // Добавь, если используешь UI элементы
+using UnityEngine.UI;
 
 namespace Game
 {
@@ -32,7 +32,19 @@ namespace Game
 
                 var length = Mathf.Min(_entryTextObjects.Length, entries.Length);
                 for (int i = 0; i < length; i++)
-                    _entryTextObjects[i].text = $"{entries[i].Rank}. {entries[i].Username} - {entries[i].Score}";
+                {
+                    // Если имя пустое, заменяем его на "Chicken not registered"
+                    string username = string.IsNullOrEmpty(entries[i].Username) ? "Chicken not registered" : entries[i].Username;
+
+                    // Заполняем поле с результатами
+                    _entryTextObjects[i].text = $"{entries[i].Rank}. {username} - {entries[i].Score}";
+                }
+
+                // Если данных меньше, чем элементов для отображения, заполняем оставшиеся элементы заглушками
+                for (int i = entries.Length; i < _entryTextObjects.Length; i++)
+                {
+                    _entryTextObjects[i].text = "Chicken not registered";
+                }
             });
         }
 
