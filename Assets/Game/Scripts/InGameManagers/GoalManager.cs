@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -7,6 +6,12 @@ namespace Game
     public class GoalManager : MonoBehaviour
     {
         public static GoalManager Instance { get; private set; }
+
+        public int CurrentScore { get; private set; }
+        public int BestScore { get; private set; }
+
+        private float _pointsPerSecond = 1f;
+        private float _timer;
 
         private void Awake()
         {
@@ -18,21 +23,55 @@ namespace Game
             {
                 Instance = this;
             }
+
+            LoadBestScore();
         }
 
-        private void CheckWinCondition()
+        private void Update()
         {
-            bool allGoalsMet = true;
+            _timer += Time.deltaTime;
 
-            if (allGoalsMet)
+            if (_timer >= 1f)
             {
-                Debug.Log("Все шарики собраны! Победа!");
+                _timer -= 1f;
+                AddPoints(Mathf.RoundToInt(_pointsPerSecond));
             }
         }
 
-        public void SetGoalSettings()
+        private void AddPoints(int points)
         {
+            CurrentScore += points;
+            Debug.Log($"Очки: {CurrentScore}");
 
+            if (CurrentScore > BestScore)
+            {
+                BestScore = CurrentScore;
+                SaveBestScore();
+                Debug.Log($"Новый лучший результат: {BestScore}");
+            }
+        }
+
+        private void SaveBestScore()
+        {
+            PlayerPrefs.SetInt("BestScore", BestScore);
+            PlayerPrefs.Save();
+        }
+
+        private void LoadBestScore()
+        {
+            BestScore = PlayerPrefs.GetInt("BestScore", 0);
+        }
+
+        public void ResetScore()
+        {
+            CurrentScore = 0;
+            _timer = 0;
+        }
+
+        // Вот добавленный метод настройки
+        public void SetGoalSettings(float pointsPerSecond)
+        {
+            _pointsPerSecond = pointsPerSecond;
         }
     }
 }

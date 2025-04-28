@@ -8,26 +8,24 @@ namespace Game
         [Header("GameOver Settings")]
         [SerializeField] private GameObject _gameOverCanvas;
 
+        [Header("Goal Settings")]
+        [SerializeField] private float _pointsPerSecond = 1f;
 
         private void Awake()
         {
-            // Проверяем, что все поля установлены
             if (_gameOverCanvas == null)
             {
                 Debug.LogError("One or more required fields are not set in ManagersBootstrap!");
                 return;
             }
 
-            // Добавляем нужные компоненты
             var inGameManagers = gameObject.AddComponent<InGameManagersBootstrap>();
             var goalManager = gameObject.AddComponent<GoalManager>();
             var inputHandler = gameObject.AddComponent<InputHandler>();
-             
-            // Устанавливаем настройки для менеджеров
-            inGameManagers.SetGameOverSettings(_gameOverCanvas);
-            goalManager.SetGoalSettings();
 
-            // Вызываем дополнительную инициализацию
+            inGameManagers.SetGameOverSettings(_gameOverCanvas);
+            goalManager.SetGoalSettings(_pointsPerSecond);
+
             inGameManagers.InitializeManagers();
         }
     }

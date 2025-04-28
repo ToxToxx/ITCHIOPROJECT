@@ -31,8 +31,6 @@ namespace Game
         {
             Vector3 spawnPos = transform.position + new Vector3(0, Random.Range(-_heightRange, _heightRange));
             GameObject pipe = Instantiate(_pipe, spawnPos, Quaternion.identity);
-
-
             Destroy(pipe, _destroyingTime);
         }
     }
