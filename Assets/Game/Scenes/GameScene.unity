@@ -3025,8 +3025,8 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 30.719997, y: 10.244999}
+  m_DrawMode: 2
+  m_Size: {x: 100, y: 10.244999}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -3041,8 +3041,8 @@ Transform:
   m_GameObject: {fileID: 1432087841}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.8, y: 0, z: 5.0040336}
-  m_LocalScale: {x: 1.5, y: 1, z: 1}
+  m_LocalPosition: {x: 65.3, y: 0, z: 5.0040336}
+  m_LocalScale: {x: 1.4999999, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1883010942}
@@ -3059,9 +3059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306fcea1df59f4b459333e70f6b619dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
-  _resetPositionX: -9
-  _startPositionX: 9.4
+  _speed: 1
+  _resetPositionX: -48.1
+  _startPositionX: 65.3
 --- !u!1 &1571371993
 GameObject:
   m_ObjectHideFlags: 0
